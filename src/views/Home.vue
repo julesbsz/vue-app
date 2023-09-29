@@ -1,5 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue'
+import Card from '../components/Card.vue';
 
 const movies = ref([])
 const actors = ref([])
@@ -42,22 +43,14 @@ onMounted(async () => {
     <main v-if="movies">
         <h2>Latest Movies</h2>
         <div class="row">
-            <router-link :to="{ path: 'movies/' + movie.id }" v-for="movie in movies.slice(0, 5)" :key="movie.id">
-                <div class="column">
-                    <img src="https://source.unsplash.com/random/150x200/?film" :alt="movie.title">
-                    <p>{{ movie.title }}</p>
-                </div>
-            </router-link>
+            <Card v-for="movie in movies.slice(0, 5)" :id="movie.id" :title="movie.title" type="movies"
+                image="https://source.unsplash.com/random/150x200/?movie" />
         </div>
 
         <h2 id="actors-title">Best Actors</h2>
         <div class="row">
-            <router-link :to="{ path: 'actors/' + actor.id }" v-for="actor in actors.slice(0, 5)" :key="actor.id">
-                <div class="column">
-                    <img src="https://source.unsplash.com/random/150x200/?human" :alt="actor.firstname">
-                    <p>{{ actor.firstName }}</p>
-                </div>
-            </router-link>
+            <Card v-for="actor in actors.slice(0, 5)" :id="actor.id" :title="actor.firstName" type="actors"
+                image="https://source.unsplash.com/random/150x200/?human" />
         </div>
     </main>
     <main v-else>
