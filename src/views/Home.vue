@@ -1,5 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue'
+import Card from '../components/Card.vue';
 
 const movies = ref([])
 const actors = ref([])
@@ -15,6 +16,7 @@ onMounted(async () => {
     if (responseMovies.ok) {
         const moviesData = await responseMovies.json()
         movies.value = moviesData
+        console.log('Movies:', moviesData)
     } else {
         throw ('Error while fetching movies')
     }
@@ -30,7 +32,7 @@ onMounted(async () => {
     if (responseActors.ok) {
         const actorsData = await responseActors.json()
         actors.value = actorsData
-        console.log(actorsData)
+        console.log('Actors:', actorsData)
     } else {
         throw ('Error while fetching actors')
     }
@@ -38,21 +40,17 @@ onMounted(async () => {
 </script>
 
 <template>
-    <main v-if="movies !== []">
+    <main v-if="movies">
         <h2>Latest Movies</h2>
         <div class="row">
-            <div class="column" v-for="movie in movies.slice(0, 5)">
-                <img src="https://source.unsplash.com/random/150x200/?film">
-                <p>{{ movie.title }}</p>
-            </div>
+            <Card v-for="movie in movies.slice(0, 5)" :id="movie.id" :title="movie.title" type="movies"
+                image="https://source.unsplash.com/random/150x200/?movie" />
         </div>
 
         <h2 id="actors-title">Best Actors</h2>
         <div class="row">
-            <div class="column" v-for="actor in actors.slice(0, 5)">
-                <img src="https://source.unsplash.com/random/150x200/?humain">
-                <p>{{ actor.lastName }}</p>
-            </div>
+            <Card v-for="actor in actors.slice(0, 5)" :id="actor.id" :title="actor.firstName" type="actors"
+                image="https://source.unsplash.com/random/150x200/?human" />
         </div>
     </main>
     <main v-else>
@@ -91,6 +89,8 @@ onMounted(async () => {
 
 .row img {
     border-radius: 5px;
+    height: 200px;
+    width: 150px;
 }
 
 .row p {
