@@ -52,10 +52,12 @@ onMounted(async () => {
 
         <h2 id="actors-title">Best Actors</h2>
         <div class="row">
-            <div class="column" v-for="actor in actors.slice(0, 5)">
-                <img src="https://source.unsplash.com/random/150x200/?humain">
-                <p>{{ actor.lastName }}</p>
-            </div>
+            <router-link :to="{ path: 'actors/' + actor.id }" v-for="actor in actors.slice(0, 5)" :key="actor.id">
+                <div class="column">
+                    <img src="https://source.unsplash.com/random/150x200/?human" :alt="actor.firstname">
+                    <p>{{ actor.firstName }}</p>
+                </div>
+            </router-link>
         </div>
     </main>
     <main v-else>
@@ -94,6 +96,8 @@ onMounted(async () => {
 
 .row img {
     border-radius: 5px;
+    height: 200px;
+    width: 150px;
 }
 
 .row p {
