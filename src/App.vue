@@ -3,6 +3,7 @@
   <h1>My Amazing Application</h1>
   <nav>
     <router-link to="/">Home</router-link>
+    <router-link to="/movies">Movies</router-link>
   </nav>
 
   <router-view></router-view>
