@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
+import Card from '../components/Card.vue';
 
 const router = useRoute()
 const movie = ref(null)
@@ -31,6 +32,15 @@ onMounted(async () => {
         <p>Release Date: {{ movie.releaseDate }}</p>
         <p>Duration: {{ movie.duration }} minutes</p>
 
+        <template v-if="movie.actors">
+            <h3>Actor(s)</h3>
+            <div class="row">
+                <Card v-for="actor in movie.actors" :title="actor.firstName"
+                    image="https://source.unsplash.com/random/300x400/?human" type="actors" :id="actor.id" />
+            </div>
+        </template>
+
+
         <router-link to="/">Back</router-link>
     </main>
     <main v-else>
@@ -57,11 +67,5 @@ h2 {
 
 p {
     margin-bottom: 10px;
-}
-
-router-link {
-    margin-top: 20px;
-    width: auto;
-    align-self: flex-start;
 }
 </style>
