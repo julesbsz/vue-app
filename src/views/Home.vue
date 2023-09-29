@@ -15,6 +15,7 @@ onMounted(async () => {
     if (responseMovies.ok) {
         const moviesData = await responseMovies.json()
         movies.value = moviesData
+        console.log('Movies:', moviesData)
     } else {
         throw ('Error while fetching movies')
     }
@@ -30,7 +31,7 @@ onMounted(async () => {
     if (responseActors.ok) {
         const actorsData = await responseActors.json()
         actors.value = actorsData
-        console.log(actorsData)
+        console.log('Actors:', actorsData)
     } else {
         throw ('Error while fetching actors')
     }
@@ -38,13 +39,15 @@ onMounted(async () => {
 </script>
 
 <template>
-    <main v-if="movies !== []">
+    <main v-if="movies">
         <h2>Latest Movies</h2>
         <div class="row">
-            <div class="column" v-for="movie in movies.slice(0, 5)">
-                <img src="https://source.unsplash.com/random/150x200/?film">
-                <p>{{ movie.title }}</p>
-            </div>
+            <router-link :to="{ path: 'movies/' + movie.id }" v-for="movie in movies.slice(0, 5)" :key="movie.id">
+                <div class="column">
+                    <img src="https://source.unsplash.com/random/150x200/?film" :alt="movie.title">
+                    <p>{{ movie.title }}</p>
+                </div>
+            </router-link>
         </div>
 
         <h2 id="actors-title">Best Actors</h2>
