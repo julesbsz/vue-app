@@ -28,5 +28,5 @@ coverage
 *.sw?
 
 node_modules/
-.vite/
-.vscode/
+.vite/*
+.vscode/*
