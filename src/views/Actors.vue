@@ -5,10 +5,19 @@ import Card from '../components/Card.vue';
 
 const actors = ref([])
 onMounted(async () => {
+    const usertoken = localStorage.getItem('token')
+
+    if (!usertoken) {
+        return window.location.href = '/login'
+    } else {
+        console.log('User token:', usertoken)
+    }
+
     const responseActors = await fetch('http://127.0.0.1:8000/api/actors?page=1', {
         headers: {
             'Content-Type': 'application/json',
-            'Accept': 'application/json'
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ' + usertoken
         }
     })
 

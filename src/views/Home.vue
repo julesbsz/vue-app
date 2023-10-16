@@ -5,11 +5,18 @@ import Card from '../components/Card.vue';
 const movies = ref([])
 const actors = ref([])
 onMounted(async () => {
+    const usertoken = localStorage.getItem('token')
+
+    if (!usertoken) {
+        return window.location.href = '/login'
+    }
+
     // fetch movies
     const responseMovies = await fetch('http://127.0.0.1:8000/api/movies?page=1', {
         headers: {
             'Content-Type': 'application/json',
-            'Accept': 'application/json'
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ' + usertoken
         }
     })
 
@@ -25,7 +32,8 @@ onMounted(async () => {
     const responseActors = await fetch('http://127.0.0.1:8000/api/actors?page=1', {
         headers: {
             'Content-Type': 'application/json',
-            'Accept': 'application/json'
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ' + usertoken
         }
     })
 

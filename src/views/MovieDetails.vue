@@ -7,10 +7,19 @@ const router = useRoute()
 const movie = ref(null)
 
 onMounted(async () => {
+    const usertoken = localStorage.getItem('token')
+
+    if (!usertoken) {
+        return window.location.href = '/login'
+    } else {
+        console.log('User token:', usertoken)
+    }
+
     const response = await fetch('http://127.0.0.1:8000/api/movies/' + router.params.id, {
         headers: {
             'Content-Type': 'application/json',
-            'Accept': 'application/json'
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ' + usertoken
         }
     })
 
