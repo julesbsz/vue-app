@@ -5,47 +5,47 @@ import Card from '../components/Card.vue';
 
 const actors = ref([])
 onMounted(async () => {
-    const responseMovies = await fetch('http://127.0.0.1:8000/api/movies?page=1', {
+    const responseActors = await fetch('http://127.0.0.1:8000/api/actors?page=1', {
         headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json'
         }
     })
 
-    if (responseMovies.ok) {
-        const moviesData = await responseMovies.json()
-        movies.value = moviesData
-        console.log('Movies:', movies.value)
+    if (responseActors.ok) {
+        const actorsData = await responseActors.json()
+        actors.value = actorsData
+        console.log('actors:', actors.value)
 
-        searchMovie()
+        searchActor()
     } else {
-        throw ('Error while fetching movies')
+        throw ('Error while fetching actors')
     }
 })
 
 let search = ref("")
-let filteredMovies = ref([])
+let filteredActors = ref([])
 
-let searchMovie = () => {
-    filteredMovies.value = movies.value
-        .map((movie, index) => ({ movie, index }))
-        .filter(({ movie }) => movie.title.toLowerCase().includes(search.value.toLowerCase()));
+let searchActor = () => {
+    filteredActors.value = actors.value
+        .map((actor, index) => ({ actor, index }))
+        .filter(({ actor }) => actor.lastName.toLowerCase().includes(search.value.toLowerCase()));
 }
 </script>
 
 <template>
-    <main v-if="movies">
-        <h2>All Movies</h2>
+    <main v-if="actors">
+        <h2>All Actors</h2>
 
         <div class="row searchbar">
-            <input type="text" v-model="search" placeholder="Search a movie by name" @keyup.enter="searchMovie"
-                @input="searchMovie">
-            <button @click="searchMovie">Search</button>
+            <input type="text" v-model="search" placeholder="Search a actor by name" @keyup.enter="searchActor"
+                @input="searchActor">
+            <button @click="searchActor">Search</button>
         </div>
 
         <div class="row">
-            <Card v-for="item in filteredMovies" :id="item.movie.id" :title="item.movie.title" type="movies"
-                image="https://source.unsplash.com/random/150x200/?movie" />
+            <Card v-for="item in filteredActors" :id="item.actor.id" :title="item.actor.lastName" type="actors"
+                image="https://source.unsplash.com/random/150x200/?actor" />
         </div>
     </main>
     <main v-else>
