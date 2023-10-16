@@ -1,5 +1,6 @@
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import Card from '../components/Card.vue';
 
 const movies = ref([])
@@ -14,20 +15,22 @@ onMounted(async () => {
     if (responseMovies.ok) {
         const moviesData = await responseMovies.json()
         movies.value = moviesData
-        console.log('Movies:', moviesData)
+        console.log('Movies:', movies.value)
+
+        searchMovie()
     } else {
         throw ('Error while fetching movies')
     }
-
-    // filteredMovies()
 })
 
-const search = ref('')
-const filteredMovies = computed(() => {
-    return movies.value.filter(movie => {
-        return movie.title.toLowerCase().includes(search.value.toLowerCase())
-    })
-})
+let search = ref("")
+let filteredMovies = ref([])
+
+let searchMovie = () => {
+    filteredMovies.value = movies.value
+        .map((movie, index) => ({ movie, index }))
+        .filter(({ movie }) => movie.title.toLowerCase().includes(search.value.toLowerCase()));
+}
 </script>
 
 <template>
@@ -35,12 +38,13 @@ const filteredMovies = computed(() => {
         <h2>All Movies</h2>
 
         <div class="row searchbar">
-            <input type="text" v-model="search" placeholder="Search a movie by name">
-            <button @click="filteredMovies">Search</button>
+            <input type="text" v-model="search" placeholder="Search a movie by name" @keyup.enter="searchMovie"
+                @input="searchMovie">
+            <button @click="searchMovie">Search</button>
         </div>
 
         <div class="row">
-            <Card v-for="movie in filteredMovies" :id="movie.id" :title="movie.title" type="movies"
+            <Card v-for="item in filteredMovies" :id="item.movie.id" :title="item.movie.title" type="movies"
                 image="https://source.unsplash.com/random/150x200/?movie" />
         </div>
     </main>
