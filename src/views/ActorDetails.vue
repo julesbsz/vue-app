@@ -8,10 +8,19 @@ const actor = ref(null)
 const movies = ref([])
 
 onMounted(async () => {
+    const usertoken = localStorage.getItem('token')
+
+    if (!usertoken) {
+        return window.location.href = '/login'
+    } else {
+        console.log('User token:', usertoken)
+    }
+
     const response = await fetch('http://127.0.0.1:8000/api/actors/' + router.params.id, {
         headers: {
             'Content-Type': 'application/json',
-            'Accept': 'application/json'
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ' + usertoken
         }
     })
 
@@ -27,7 +36,8 @@ onMounted(async () => {
         const response = await fetch('http://127.0.0.1:8000' + movie, {
             headers: {
                 'Content-Type': 'application/json',
-                'Accept': 'application/json'
+                'Accept': 'application/json',
+                'Authorization': 'Bearer ' + usertoken
             }
         })
 

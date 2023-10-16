@@ -4,10 +4,19 @@ import Card from '../components/Card.vue';
 
 const categories = ref([])
 onMounted(async () => {
+    const usertoken = localStorage.getItem('token')
+
+    if (!usertoken) {
+        return window.location.href = '/login'
+    } else {
+        console.log('User token:', usertoken)
+    }
+
     const responseCategories = await fetch('http://127.0.0.1:8000/api/categories?page=1', {
         headers: {
             'Content-Type': 'application/json',
-            'Accept': 'application/json'
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ' + usertoken
         }
     })
 
