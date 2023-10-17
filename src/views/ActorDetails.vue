@@ -28,8 +28,11 @@ onMounted(async () => {
         const actorData = await response.json()
         actor.value = actorData
         console.log('Actor:', actorData)
+    } else if (response.status === 401) {
+        localStorage.removeItem('token')
+        window.location.href = '/login'
     } else {
-        throw ('Error while fetching movie')
+        throw ('Error while fetching movies')
     }
 
     actor.value.movies.forEach(async movie => {
@@ -45,8 +48,11 @@ onMounted(async () => {
             const movieData = await response.json()
             movies.value.push(movieData)
             console.log('Related Movies:', movieData)
+        } else if (response.status === 401) {
+            localStorage.removeItem('token')
+            window.location.href = '/login'
         } else {
-            throw ('Error while fetching related movies')
+            throw ('Error while fetching movies')
         }
     });
 
