@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
 import Card from '../components/Card.vue';
+import Searchbar from '../components/Searchbar.vue';
 
 const movies = ref([])
 onMounted(async () => {
@@ -30,15 +31,6 @@ onMounted(async () => {
     } else {
         throw ('Error while fetching movies')
     }
-
-    // filteredMovies()
-})
-
-const search = ref('')
-const filteredMovies = computed(() => {
-    return movies.value.filter(movie => {
-        return movie.title.toLowerCase().includes(search.value.toLowerCase())
-    })
 })
 </script>
 
@@ -46,13 +38,10 @@ const filteredMovies = computed(() => {
     <main v-if="movies">
         <h2>All Movies</h2>
 
-        <div class="row searchbar">
-            <input type="text" v-model="search" placeholder="Search a movie by name">
-            <button @click="filteredMovies">Search</button>
-        </div>
+        <Searchbar type="movies" />
 
         <div class="row">
-            <Card v-for="movie in filteredMovies" :id="movie.id" :title="movie.title" type="movies"
+            <Card v-for="movie in movies" :id="movie.id" :title="movie.title" type="movies"
                 image="https://source.unsplash.com/random/150x200/?movie" />
         </div>
     </main>
@@ -75,53 +64,6 @@ const filteredMovies = computed(() => {
     align-items: center;
     justify-content: space-between;
     flex-wrap: wrap;
-}
-
-.row.searchbar {
-    justify-content: flex-start;
-    gap: 15px;
-}
-
-.row.row.searchbar input {
-    height: 30px;
-    width: 500px;
-    background-color: transparent;
-    border: none;
-    outline: none;
-    border-bottom: 1px #ECECEC solid;
-    color: black;
-    font-size: 16px;
-}
-
-.row.row.searchbar button {
-    height: 30px;
-    width: 75px;
-    background-color: hsla(160, 100%, 37%, 1);
-    border: none;
-    border-radius: 5px;
-    transition: all 0.3s;
-    cursor: pointer;
-    color: white;
-}
-
-.row.row.searchbar button:hover {
-    background-color: hsla(160, 100%, 37%, 0.5);
-}
-
-
-.column {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 1rem;
-    border-radius: 7px;
-    transition: all 0.3s;
-    cursor: pointer;
-}
-
-.column:hover {
-    background-color: #ECECEC;
 }
 
 .row img {

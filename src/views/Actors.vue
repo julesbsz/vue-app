@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import Card from '../components/Card.vue';
+import Searchbar from '../components/Searchbar.vue';
 
 const actors = ref([])
 onMounted(async () => {
@@ -25,8 +26,6 @@ onMounted(async () => {
         const actorsData = await responseActors.json()
         actors.value = actorsData
         console.log('actors:', actors.value)
-
-        searchActor()
     } else if (responseActors.status === 401) {
         localStorage.removeItem('token')
         window.location.href = '/login'
@@ -34,29 +33,16 @@ onMounted(async () => {
         throw ('Error while fetching movies')
     }
 })
-
-let search = ref("")
-let filteredActors = ref([])
-
-let searchActor = () => {
-    filteredActors.value = actors.value
-        .map((actor, index) => ({ actor, index }))
-        .filter(({ actor }) => actor.lastName.toLowerCase().includes(search.value.toLowerCase()));
-}
 </script>
 
 <template>
     <main v-if="actors">
         <h2>All Actors</h2>
 
-        <div class="row searchbar">
-            <input type="text" v-model="search" placeholder="Search a actor by name" @keyup.enter="searchActor"
-                @input="searchActor">
-            <button @click="searchActor">Search</button>
-        </div>
+        <Searchbar type="actors" />
 
         <div class="row">
-            <Card v-for="item in filteredActors" :id="item.actor.id" :title="item.actor.lastName" type="actors"
+            <Card v-for="item in actors" :id="item.id" :title="item.lastName" type="actors"
                 image="https://source.unsplash.com/random/150x200/?actor" />
         </div>
     </main>
@@ -79,53 +65,6 @@ let searchActor = () => {
     align-items: center;
     justify-content: space-between;
     flex-wrap: wrap;
-}
-
-.row.searchbar {
-    justify-content: flex-start;
-    gap: 15px;
-}
-
-.row.row.searchbar input {
-    height: 30px;
-    width: 500px;
-    background-color: transparent;
-    border: none;
-    outline: none;
-    border-bottom: 1px #ECECEC solid;
-    color: black;
-    font-size: 16px;
-}
-
-.row.row.searchbar button {
-    height: 30px;
-    width: 75px;
-    background-color: hsla(160, 100%, 37%, 1);
-    border: none;
-    border-radius: 5px;
-    transition: all 0.3s;
-    cursor: pointer;
-    color: white;
-}
-
-.row.row.searchbar button:hover {
-    background-color: hsla(160, 100%, 37%, 0.5);
-}
-
-
-.column {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 1rem;
-    border-radius: 7px;
-    transition: all 0.3s;
-    cursor: pointer;
-}
-
-.column:hover {
-    background-color: #ECECEC;
 }
 
 .row img {
