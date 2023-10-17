@@ -26,8 +26,11 @@ onMounted(async () => {
         console.log('categories:', categories.value)
 
         searchCategory()
+    } else if (responseCategories.status === 401) {
+        localStorage.removeItem('token')
+        window.location.href = '/login'
     } else {
-        throw ('Error while fetching categories')
+        throw ('Error while fetching movies')
     }
 })
 

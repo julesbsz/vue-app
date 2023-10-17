@@ -27,8 +27,11 @@ onMounted(async () => {
         console.log('actors:', actors.value)
 
         searchActor()
+    } else if (responseActors.status === 401) {
+        localStorage.removeItem('token')
+        window.location.href = '/login'
     } else {
-        throw ('Error while fetching actors')
+        throw ('Error while fetching movies')
     }
 })
 

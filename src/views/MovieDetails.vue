@@ -27,8 +27,11 @@ onMounted(async () => {
         const movieData = await response.json()
         movie.value = movieData
         console.log('Movie:', movieData)
+    } else if (response.status === 401) {
+        localStorage.removeItem('token')
+        window.location.href = '/login'
     } else {
-        throw ('Error while fetching movie')
+        throw ('Error while fetching movies')
     }
 })
 </script>
