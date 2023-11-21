@@ -4,11 +4,6 @@ import { ref, onMounted } from "vue";
 const token = ref("");
 onMounted(() => {
 	token.value = localStorage.getItem("token");
-
-	if (token) {
-	} else {
-		return (window.location.href = "/login");
-	}
 });
 </script>
 
