@@ -7,6 +7,7 @@ import Categories from "../views/Categories.vue";
 import MovieDetails from "../views/MovieDetails.vue";
 import ActorDetails from "../views/ActorDetails.vue";
 import Login from "../views/Login.vue";
+import Logout from "../views/Logout.vue";
 import Search from "../views/Search.vue";
 
 const router = createRouter({
@@ -39,6 +40,10 @@ const router = createRouter({
 		{
 			path: "/login",
 			component: Login,
+		},
+		{
+			path: "/logout",
+			component: Logout,
 		},
 		{
 			path: "/search",
