@@ -30,7 +30,7 @@ const handleLogin = () => {
 	request.then((response) => {
 		if (response.status === 200) {
 			response.json().then((data) => {
-				console.log("login request data.token:", data.token);
+				console.log("login request data.token:", data);
 				localStorage.setItem("token", data.token);
 				window.location.href = "/";
 			});
