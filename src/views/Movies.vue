@@ -35,14 +35,20 @@ onMounted(async () => {
 });
 
 const isDrawerOpen = ref(false);
+const drawerData = ref({});
+const drawerId = ref(null);
 const handleEdit = (id) => {
-	console.log("Edit movie with id:", id);
 	isDrawerOpen.value = true;
+	drawerId.value = id;
+	movies.value.forEach((movie) => {
+		if (movie.id === id) {
+			drawerData.value = movie;
+		}
+	});
 };
 
 const closeDrawer = () => {
 	isDrawerOpen.value = false;
-	console.log("Close drawer");
 };
 </script>
 
@@ -63,7 +69,7 @@ const closeDrawer = () => {
 		<h2>Loading...</h2>
 	</main>
 
-	<Drawer :isOpen="isDrawerOpen" @close-drawer="closeDrawer" />
+	<Drawer :isOpen="isDrawerOpen" @close-drawer="closeDrawer" :id="drawerId" :data="drawerData" />
 </template>
 
 <style scoped>
