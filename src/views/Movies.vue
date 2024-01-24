@@ -59,6 +59,10 @@ const closeDrawer = () => {
 		<Searchbar type="movies" />
 
 		<div class="row">
+			<router-link to="/movies/add">Add movie</router-link>
+		</div>
+
+		<div class="row">
 			<div class="column" v-for="movie in movies">
 				<Card :id="movie.id" :title="movie.title" type="movies" image="https://source.unsplash.com/random/150x200/?movie" />
 				<a class="edit-movie" @click="() => handleEdit(movie.id)">Edit</a>
