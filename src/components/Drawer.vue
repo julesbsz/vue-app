@@ -43,7 +43,7 @@ watch(props, () => {
 	type.value = props.type;
 });
 
-const errorMessage = ref("");
+const errorMessage = ref(null);
 const body = ref("");
 const handleSave = async () => {
 	if (!itemId.value) return;
@@ -92,6 +92,16 @@ const handleSave = async () => {
 			firstname: itemData.value.firstname,
 			lastname: itemData.value.lastname,
 			nationality: itemData.value.nationality,
+		});
+	}
+
+	if (type.value == "categories") {
+		if (itemData.value.name.replace(/\s+/g, "") == "" || itemData.value.name == null) {
+			return (errorMessage.value = "Category name cannot be empty");
+		}
+
+		body.value = JSON.stringify({
+			name: itemData.value.name,
 		});
 	}
 
@@ -164,6 +174,21 @@ const handleSave = async () => {
 				<label for="nationality">Nationality</label>
 				<input type="text" name="nationality" id="nationality-input" v-model="itemData.nationality" />
 			</div>
+
+			<p v-if="errorMessage" class="error">{{ errorMessage }}</p>
+
+			<button @click="handleSave">
+				{{ loading ? "Saving..." : "Save" }}
+			</button>
+		</div>
+
+		<div class="column" v-if="type == 'categories'">
+			<div class="column">
+				<label for="name">Category Name</label>
+				<input type="text" name="name" id="name-input" v-model="itemData.name" />
+			</div>
+
+			<p v-if="errorMessage" class="error">{{ errorMessage }}</p>
 
 			<button @click="handleSave">
 				{{ loading ? "Saving..." : "Save" }}

@@ -10,6 +10,7 @@ import Login from "../views/Login.vue";
 import Logout from "../views/Logout.vue";
 import Search from "../views/Search.vue";
 import AddMovie from "../views/AddMovie.vue";
+import CategoryDetails from "../views/CategoryDetails.vue";
 
 const router = createRouter({
 	history: createWebHistory(import.meta.env.BASE_URL),
@@ -29,6 +30,10 @@ const router = createRouter({
 		{
 			path: "/categories",
 			component: Categories,
+		},
+		{
+			path: "/categories/:id",
+			component: CategoryDetails,
 		},
 		{
 			path: "/movies/:id",

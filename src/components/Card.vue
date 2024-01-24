@@ -34,6 +34,11 @@ const props = defineProps({
 		type: Object,
 		required: false,
 	},
+	showActions: {
+		type: Boolean,
+		required: false,
+		default: false,
+	},
 });
 
 const handleModal = () => {
@@ -93,7 +98,7 @@ const closeDrawer = () => {
 			<img :src="image" :alt="title" />
 			<p>{{ title }}</p>
 
-			<div class="row">
+			<div class="row" v-if="props.showActions">
 				<a v-if="props.data" @click.prevent="() => handleEdit(props.id)">Edit</a>
 				<a @click.prevent="handleModal">Delete</a>
 			</div>
