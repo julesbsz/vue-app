@@ -40,7 +40,7 @@ onMounted(async () => {
 		<Searchbar type="actors" />
 
 		<div class="row">
-			<Card v-for="item in actors" :data="item" :id="item.id" :title="item.lastname" type="actors" image="https://source.unsplash.com/random/150x200/?actor" />
+			<Card v-for="item in actors" :show-actions="true" :data="item" :id="item.id" :title="item.lastname" type="actors" image="https://source.unsplash.com/random/150x200/?actor" />
 		</div>
 	</main>
 	<main v-else>

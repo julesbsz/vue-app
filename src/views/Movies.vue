@@ -44,7 +44,7 @@ onMounted(async () => {
 
 		<div class="row">
 			<div class="column" v-for="movie in movies">
-				<Card :id="movie.id" :data="movie" :title="movie.title" type="movies" image="https://source.unsplash.com/random/150x200/?movie" />
+				<Card :show-actions="true" :id="movie.id" :data="movie" :title="movie.title" type="movies" image="https://source.unsplash.com/random/150x200/?movie" />
 			</div>
 		</div>
 	</main>
