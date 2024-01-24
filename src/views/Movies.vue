@@ -2,7 +2,6 @@
 import { ref, onMounted, computed } from "vue";
 import Card from "../components/Card.vue";
 import Searchbar from "../components/Searchbar.vue";
-import Drawer from "../components/Drawer.vue";
 
 const movies = ref([]);
 onMounted(async () => {
@@ -10,8 +9,6 @@ onMounted(async () => {
 
 	if (!usertoken) {
 		return (window.location.href = "/login");
-	} else {
-		console.log("User token:", usertoken);
 	}
 
 	const responseMovies = await fetch("http://127.0.0.1:8000/api/movies?page=1", {
@@ -33,23 +30,6 @@ onMounted(async () => {
 		throw "Error while fetching movies";
 	}
 });
-
-const isDrawerOpen = ref(false);
-const drawerData = ref({});
-const drawerId = ref(null);
-const handleEdit = (id) => {
-	isDrawerOpen.value = true;
-	drawerId.value = id;
-	movies.value.forEach((movie) => {
-		if (movie.id === id) {
-			drawerData.value = movie;
-		}
-	});
-};
-
-const closeDrawer = () => {
-	isDrawerOpen.value = false;
-};
 </script>
 
 <template>
@@ -64,16 +44,13 @@ const closeDrawer = () => {
 
 		<div class="row">
 			<div class="column" v-for="movie in movies">
-				<Card :id="movie.id" :title="movie.title" type="movies" image="https://source.unsplash.com/random/150x200/?movie" />
-				<a class="edit-movie" @click="() => handleEdit(movie.id)">Edit</a>
+				<Card :id="movie.id" :data="movie" :title="movie.title" type="movies" image="https://source.unsplash.com/random/150x200/?movie" />
 			</div>
 		</div>
 	</main>
 	<main v-else>
 		<h2>Loading...</h2>
 	</main>
-
-	<Drawer :isOpen="isDrawerOpen" @close-drawer="closeDrawer" :id="drawerId" :data="drawerData" />
 </template>
 
 <style scoped>
@@ -109,10 +86,5 @@ const closeDrawer = () => {
 	gap: 5px;
 	align-items: center;
 	margin: 20px;
-}
-
-.edit-movie {
-	color: hsla(160, 100%, 37%, 1);
-	cursor: pointer;
 }
 </style>

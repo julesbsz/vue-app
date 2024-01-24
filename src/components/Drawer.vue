@@ -10,6 +10,8 @@ onMounted(() => {
 	}
 });
 
+const loading = ref(false);
+
 const props = defineProps({
 	isOpen: {
 		type: Boolean,
@@ -23,46 +25,100 @@ const props = defineProps({
 		type: Object,
 		required: false,
 	},
+	type: {
+		type: String,
+		required: true,
+	},
 });
 
-const userInput = ref(props.data.title);
-const movieData = ref(props.data);
-const movieId = ref(props.id);
+const itemData = ref(props.data);
+const itemId = ref(props.id);
 const isDrawerOpen = ref(props.isOpen);
+const type = ref(props.type);
 
 watch(props, () => {
-	userInput.value = props.data.title;
-	movieData.value = props.data;
-	movieId.value = props.id;
+	itemData.value = props.data;
+	itemId.value = props.id;
 	isDrawerOpen.value = props.isOpen;
+	type.value = props.type;
 });
 
+const errorMessage = ref("");
+const body = ref("");
 const handleSave = async () => {
-	if (!props.id) return;
+	if (!itemId.value) return;
+	errorMessage.value = "";
 
-	const response = await fetch(`http://127.0.0.1:8000/api/movies/${movieId.value}`, {
+	if (type.value == "movies") {
+		if (itemData.value.title.replace(/\s+/g, "") == "" || itemData.value.title == null) {
+			errorMessage.value = "Title cannot be empty";
+			return;
+		}
+
+		if (itemData.value.description.replace(/\s+/g, "") == "" || itemData.value.description == null) {
+			errorMessage.value = "Description cannot be empty";
+			return;
+		}
+
+		if (itemData.value.duration == "" || itemData.value.duration == null || itemData.value.duration == 0) {
+			errorMessage.value = "Duration cannot be null";
+			return;
+		}
+
+		body.value = JSON.stringify({
+			title: itemData.value.title,
+			description: itemData.value.description,
+			duration: itemData.value.duration,
+		});
+	}
+
+	if (type.value == "actors") {
+		if (itemData.value.firstname.replace(/\s+/g, "") == "" || itemData.value.firstname == null) {
+			errorMessage.value = "Fistname cannot be empty";
+			return;
+		}
+
+		if (itemData.value.lastname.replace(/\s+/g, "") == "" || itemData.value.lastname == null) {
+			errorMessage.value = "Lastname cannot be empty";
+			return;
+		}
+
+		if (itemData.value.nationality.replace(/\s+/g, "") == "" || itemData.value.nationality == null) {
+			errorMessage.value = "Nationality cannot be empty";
+			return;
+		}
+
+		body.value = JSON.stringify({
+			firstname: itemData.value.firstname,
+			lastname: itemData.value.lastname,
+			nationality: itemData.value.nationality,
+		});
+	}
+
+	loading.value = true;
+	const response = await fetch(`http://127.0.0.1:8000/api/${type.value}/${itemId.value}`, {
 		method: "PATCH",
 		headers: {
 			"Content-Type": "application/merge-patch+json",
 			Accept: "application/json",
 			Authorization: "Bearer " + usertoken.value,
 		},
-		body: JSON.stringify({
-			title: userInput.value,
-		}),
+		body: body.value,
 	});
 
 	if (response.ok) {
-		const movieData = await response.json();
-		props.data.title = movieData.title;
-		console.log("done, new title is", movieData.title, "closing...");
+		const itemData = await response.json();
+		props.data = itemData;
+		console.log("done, new data are", itemData, "closing...");
 		isDrawerOpen.value = false;
 	} else if (response.status === 401) {
 		localStorage.removeItem("token");
 		window.location.href = "/login";
 	} else {
-		throw "Error while fetching movies";
+		errorMessage.value("Error while saving");
+		console.log("Error while saving");
 	}
+	loading.value = false;
 };
 </script>
 
@@ -70,10 +126,48 @@ const handleSave = async () => {
 	<div class="drawer" :class="{ active: isDrawerOpen }">
 		<svg class="close-btn" @click="$emit('closeDrawer')" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12.0007 10.5865L16.9504 5.63672L18.3646 7.05093L13.4149 12.0007L18.3646 16.9504L16.9504 18.3646L12.0007 13.4149L7.05093 18.3646L5.63672 16.9504L10.5865 12.0007L5.63672 7.05093L7.05093 5.63672L12.0007 10.5865Z"></path></svg>
 
-		<div class="column">
-			<label for="title">Movie title</label>
-			<input type="text" name="title" id="title-input" v-model="userInput" />
-			<button @click="handleSave">Save</button>
+		<div class="column" v-if="type == 'movies'">
+			<div class="column">
+				<label for="title">Title</label>
+				<input type="text" name="title" id="title-input" v-model="itemData.title" />
+			</div>
+
+			<div class="column">
+				<label for="description">Description</label>
+				<textarea name="description" id="description-input" v-model="itemData.description" />
+			</div>
+
+			<div class="column">
+				<label for="duration">Duration</label>
+				<input type="number" name="duration" id="duration-input" v-model="itemData.duration" />
+			</div>
+
+			<p v-if="errorMessage" class="error">{{ errorMessage }}</p>
+
+			<button @click="handleSave">
+				{{ loading ? "Saving..." : "Save" }}
+			</button>
+		</div>
+
+		<div class="column" v-if="type == 'actors'">
+			<div class="column">
+				<label for="firstname">First name</label>
+				<input type="text" name="firstname" id="firstname-input" v-model="itemData.firstname" />
+			</div>
+
+			<div class="column">
+				<label for="lastname">Last name</label>
+				<input type="text" name="lastname" id="lastname-input" v-model="itemData.lastname" />
+			</div>
+
+			<div class="column">
+				<label for="nationality">Nationality</label>
+				<input type="text" name="nationality" id="nationality-input" v-model="itemData.nationality" />
+			</div>
+
+			<button @click="handleSave">
+				{{ loading ? "Saving..." : "Save" }}
+			</button>
 		</div>
 	</div>
 </template>
@@ -119,6 +213,17 @@ input {
 	font-size: 16px;
 }
 
+textarea {
+	height: 100px;
+	width: 100%;
+	background-color: transparent;
+	border: none;
+	outline: none;
+	border-bottom: 1px #ececec solid;
+	color: black;
+	font-size: 16px;
+}
+
 button {
 	margin-top: 10px;
 	height: 30px;
@@ -144,5 +249,9 @@ button {
 .close-btn:hover {
 	fill: hsla(160, 100%, 37%, 1);
 	transform: rotate(-90deg);
+}
+
+.error {
+	color: crimson;
 }
 </style>

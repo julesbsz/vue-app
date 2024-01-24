@@ -1,6 +1,7 @@
 <script setup>
-import { defineProps, ref } from "vue";
+import { defineProps, ref, computed } from "vue";
 import Modal from "../components/Modal.vue";
+import Drawer from "../components/Drawer.vue";
 
 const isModalVisible = ref(false);
 
@@ -28,6 +29,10 @@ const props = defineProps({
 	id: {
 		type: Number,
 		required: true,
+	},
+	data: {
+		type: Object,
+		required: false,
 	},
 });
 
@@ -61,6 +66,19 @@ const handleDelete = async () => {
 		throw "Error while deleting";
 	}
 };
+
+const isDrawerOpen = ref(false);
+const drawerData = ref({});
+const drawerId = ref(null);
+const handleEdit = (id) => {
+	isDrawerOpen.value = true;
+	drawerId.value = id;
+	drawerData.value = props.data;
+};
+
+const closeDrawer = () => {
+	isDrawerOpen.value = false;
+};
 </script>
 
 <template>
@@ -76,11 +94,13 @@ const handleDelete = async () => {
 			<p>{{ title }}</p>
 
 			<div class="row">
-				<router-link :to="{ path: '/' + type + '/' + id + '/edit' }">Edit</router-link>
+				<a v-if="props.data" @click.prevent="() => handleEdit(props.id)">Edit</a>
 				<a @click.prevent="handleModal">Delete</a>
 			</div>
 		</div>
 	</router-link>
+
+	<Drawer :type="props.type" :isOpen="isDrawerOpen" @close-drawer="closeDrawer" :id="drawerId" :data="drawerData" />
 </template>
 
 <style scoped>
