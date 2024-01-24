@@ -1,8 +1,8 @@
 <script setup>
 import { ref, onMounted } from "vue";
 
-const email = ref("user1@mail.com");
-const password = ref("1234");
+const email = ref("jules@gmail.com");
+const password = ref("test");
 
 const message = ref("");
 onMounted(() => {
@@ -13,7 +13,10 @@ onMounted(() => {
 	}
 });
 
+const loading = ref(false);
 const handleLogin = () => {
+	loading.value = true;
+
 	const json = {
 		username: email.value,
 		password: password.value,
@@ -34,11 +37,15 @@ const handleLogin = () => {
 				localStorage.setItem("token", data.token);
 				window.location.href = "/";
 			});
+		} else if (response.status === 401) {
+			message.value = "Wrong credentials";
 		} else {
 			response.json().then((data) => {
 				throw new Error("An error occured when trying to connect user:", data.message);
 			});
 		}
+
+		loading.value = false;
 	});
 };
 </script>
@@ -59,7 +66,10 @@ const handleLogin = () => {
 			<input type="password" name="password" id="password" placeholder="1234" v-model="password" />
 		</div>
 
-		<button @click="handleLogin">Login</button>
+		<button @click="handleLogin">
+			<template v-if="loading">Loading...</template>
+			<template v-else>Login</template>
+		</button>
 	</main>
 </template>
 
