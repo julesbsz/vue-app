@@ -41,6 +41,14 @@ const props = defineProps({
 	},
 });
 
+const imageLoaded = ref(false);
+const image = new Image();
+image.src = props.image;
+
+image.onload = () => {
+	imageLoaded.value = true;
+};
+
 const handleModal = () => {
 	showModal();
 };
@@ -93,9 +101,20 @@ const closeDrawer = () => {
 		</template>
 	</Modal>
 
-	<router-link :to="{ path: '/' + type + '/' + id }">
+	<div class="skeleton-card" v-if="!imageLoaded">
 		<div class="column">
-			<img :src="image" :alt="title" />
+			<div class="skeleton-image"></div>
+			<div class="skeleton-text"></div>
+
+			<div class="row" v-if="props.showActions">
+				<div class="skeleton-text"></div>
+				<div class="skeleton-text"></div>
+			</div>
+		</div>
+	</div>
+	<router-link :to="{ path: '/' + type + '/' + id }" v-else>
+		<div class="column">
+			<img :src="image.src" alt="Movie Image" />
 			<p>{{ title }}</p>
 
 			<div class="row" v-if="props.showActions">
@@ -143,6 +162,32 @@ const closeDrawer = () => {
 
 .row p {
 	text-align: center;
+	margin-top: 10px;
+}
+
+.skeleton-card {
+	width: 150px;
+	height: 300px;
+	margin: 10px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+}
+
+.skeleton-image {
+	width: 150px;
+	height: 200px;
+	background-color: #ececec;
+	border-radius: 5px;
+}
+
+.skeleton-text {
+	width: 100px;
+	height: 20px;
+	background-color: #ececec;
+	border-radius: 5px;
 	margin-top: 10px;
 }
 </style>
