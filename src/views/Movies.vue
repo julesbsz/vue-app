@@ -6,6 +6,7 @@ import { useRoute } from "vue-router";
 
 const route = useRoute();
 const page = ref(route.query.page || 1);
+const filter = ref(route.query.title || null);
 
 const isNextPageDisabled = ref(true);
 
@@ -17,7 +18,7 @@ onMounted(async () => {
 		return (window.location.href = "/login");
 	}
 
-	const responseMovies = await fetch(`http://127.0.0.1:8000/api/movies?page=${page.value}`, {
+	const responseMovies = await fetch(`http://127.0.0.1:8000/api/movies?page=${page.value}${filter.value ? "&title=" + filter.value : ""}`, {
 		headers: {
 			"Content-Type": "application/json",
 			Accept: "application/json",
@@ -41,24 +42,26 @@ onMounted(async () => {
 		throw "Error while fetching movies";
 	}
 
-	const tempPage = page.value + 1;
-	const responseNextMovies = await fetch(`http://127.0.0.1:8000/api/movies?page=${tempPage}`, {
-		headers: {
-			"Content-Type": "application/json",
-			Accept: "application/json",
-			Authorization: "Bearer " + usertoken,
-		},
-	});
+	if (!filter.value) {
+		const tempPage = page.value + 1;
+		const responseNextMovies = await fetch(`http://127.0.0.1:8000/api/movies?page=${tempPage}`, {
+			headers: {
+				"Content-Type": "application/json",
+				Accept: "application/json",
+				Authorization: "Bearer " + usertoken,
+			},
+		});
 
-	if (responseNextMovies.status === 401) {
-		localStorage.removeItem("token");
-		window.location.href = "/login";
-	}
+		if (responseNextMovies.status === 401) {
+			localStorage.removeItem("token");
+			window.location.href = "/login";
+		}
 
-	if (responseNextMovies.ok) {
-		const nextMovies = await responseNextMovies.json();
-		if (nextMovies.length > 0) {
-			isNextPageDisabled.value = false;
+		if (responseNextMovies.ok) {
+			const nextMovies = await responseNextMovies.json();
+			if (nextMovies.length > 0) {
+				isNextPageDisabled.value = false;
+			}
 		}
 	}
 });

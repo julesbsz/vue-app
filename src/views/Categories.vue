@@ -6,6 +6,7 @@ import { useRoute } from "vue-router";
 
 const route = useRoute();
 const page = ref(route.query.page || 1);
+const filter = ref(route.query.name || null);
 
 const isNextPageDisabled = ref(true);
 
@@ -17,7 +18,7 @@ onMounted(async () => {
 		return (window.location.href = "/login");
 	}
 
-	const responseCategories = await fetch(`http://127.0.0.1:8000/api/categories?page=${page.value}`, {
+	const responseCategories = await fetch(`http://127.0.0.1:8000/api/categories?page=${page.value}${filter.value ? "&name=" + filter.value : ""}`, {
 		headers: {
 			"Content-Type": "application/json",
 			Accept: "application/json",
@@ -40,24 +41,26 @@ onMounted(async () => {
 		throw "Error while fetching categories";
 	}
 
-	const tempPage = page.value + 1;
-	const responseNextCategories = await fetch(`http://127.0.0.1:8000/api/categories?page=${tempPage}`, {
-		headers: {
-			"Content-Type": "application/json",
-			Accept: "application/json",
-			Authorization: "Bearer " + usertoken,
-		},
-	});
+	if (!filter.value) {
+		const tempPage = page.value + 1;
+		const responseNextCategories = await fetch(`http://127.0.0.1:8000/api/categories?page=${tempPage}`, {
+			headers: {
+				"Content-Type": "application/json",
+				Accept: "application/json",
+				Authorization: "Bearer " + usertoken,
+			},
+		});
 
-	if (responseNextCategories.status === 401) {
-		localStorage.removeItem("token");
-		window.location.href = "/login";
-	}
+		if (responseNextCategories.status === 401) {
+			localStorage.removeItem("token");
+			window.location.href = "/login";
+		}
 
-	if (responseNextCategories.ok) {
-		const nextCategories = await responseNextCategories.json();
-		if (nextCategories.length > 0) {
-			isNextPageDisabled.value = false;
+		if (responseNextCategories.ok) {
+			const nextCategories = await responseNextCategories.json();
+			if (nextCategories.length > 0) {
+				isNextPageDisabled.value = false;
+			}
 		}
 	}
 });

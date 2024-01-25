@@ -1,5 +1,5 @@
 <script setup>
-import { defineProps, ref } from "vue";
+import { defineProps, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 const router = useRouter();
 
@@ -10,18 +10,31 @@ const props = defineProps({
 	},
 });
 
-console.log(props.type);
-
 const search = ref("");
+
 const handleSearch = () => {
-	return router.push(`/search?${props.type}=${search.value}`);
+	if (props.type === "movies") {
+		return (window.location.href = `/movies?title=${search.value}`);
+	}
+
+	if (props.type === "actors") {
+		return (window.location.href = `/actors?lastname=${search.value}`);
+	}
+
+	if (props.type === "categories") {
+		return (window.location.href = `/categories?name=${search.value}`);
+	}
 };
+
+onMounted(() => {
+	search.value = router.currentRoute.value.query.lastname || router.currentRoute.value.query.name || router.currentRoute.value.query.title || "";
+});
 </script>
 
 <template>
 	<div class="row searchbar">
 		<input type="text" v-model="search" :placeholder="'Search a ' + props.type.slice(0, -1) + ' by name'" />
-		<button @click="handleSearch">Search</button>
+		<button @click="handleSearch" @keyup.enter="handleSearch">Search</button>
 	</div>
 </template>
 
