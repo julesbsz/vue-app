@@ -7,6 +7,7 @@ import { useRoute } from "vue-router";
 
 const route = useRoute();
 const page = ref(route.query.page || 1);
+const filter = ref(route.query.lastname || null);
 
 const isNextPageDisabled = ref(true);
 
@@ -18,7 +19,7 @@ onMounted(async () => {
 		return (window.location.href = "/login");
 	}
 
-	const responseActors = await fetch(`http://127.0.0.1:8000/api/actors?page=${page.value}`, {
+	const responseActors = await fetch(`http://127.0.0.1:8000/api/actors?page=${page.value}${filter.value ? "&lastname=" + filter.value : ""}`, {
 		headers: {
 			"Content-Type": "application/json",
 			Accept: "application/json",
@@ -42,24 +43,26 @@ onMounted(async () => {
 		throw "Error while fetching actors";
 	}
 
-	const tempPage = page.value + 1;
-	const responseNextActors = await fetch(`http://127.0.0.1:8000/api/actors?page=${tempPage}`, {
-		headers: {
-			"Content-Type": "application/json",
-			Accept: "application/json",
-			Authorization: "Bearer " + usertoken,
-		},
-	});
+	if (!filter.value) {
+		const tempPage = page.value + 1;
+		const responseNextActors = await fetch(`http://127.0.0.1:8000/api/actors?page=${tempPage}`, {
+			headers: {
+				"Content-Type": "application/json",
+				Accept: "application/json",
+				Authorization: "Bearer " + usertoken,
+			},
+		});
 
-	if (responseNextActors.status === 401) {
-		localStorage.removeItem("token");
-		window.location.href = "/login";
-	}
+		if (responseNextActors.status === 401) {
+			localStorage.removeItem("token");
+			window.location.href = "/login";
+		}
 
-	if (responseNextActors.ok) {
-		const nextActors = await responseNextActors.json();
-		if (nextActors.length > 0) {
-			isNextPageDisabled.value = false;
+		if (responseNextActors.ok) {
+			const nextActors = await responseNextActors.json();
+			if (nextActors.length > 0) {
+				isNextPageDisabled.value = false;
+			}
 		}
 	}
 });
