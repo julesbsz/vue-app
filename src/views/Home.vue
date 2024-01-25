@@ -54,12 +54,12 @@ onMounted(async () => {
 	<main v-if="movies">
 		<h2>Latest Movies</h2>
 		<div class="row">
-			<Card v-for="movie in movies.slice(0, 5)" :id="movie.id" :title="movie.title" type="movies" image="https://source.unsplash.com/random/150x200/?movie" />
+			<Card v-for="movie in movies.slice(0, 5)" :id="movie.id" :title="movie.title" type="movies" :image="movie.posterUrl ? 'http://127.0.0.1:8000' + movie.posterUrl : 'https://source.unsplash.com/random/150x200/?movie?' + movie.id" />
 		</div>
 
 		<h2 id="actors-title">Best Actors</h2>
 		<div class="row">
-			<Card v-for="actor in actors.slice(0, 5)" :id="actor.id" :title="actor.firstname + ' ' + actor.lastname" type="actors" image="https://source.unsplash.com/random/150x200/?human" />
+			<Card v-for="actor in actors.slice(0, 5)" :id="actor.id" :title="actor.firstname + ' ' + actor.lastname" type="actors" :image="'https://source.unsplash.com/random/150x200/?human?' + actor.id" />
 		</div>
 	</main>
 	<main v-else>

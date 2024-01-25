@@ -71,6 +71,7 @@ onMounted(async () => {
 	}
 });
 
+const posterData = ref(null);
 const addMovie = async () => {
 	errorMessage.value = "";
 
@@ -101,6 +102,7 @@ const addMovie = async () => {
 	});
 
 	if (responseUploadPoster.ok) {
+		posterData.value = await responseUploadPoster.json();
 		console.log("Poster uploaded successfully");
 	} else if (responseUploadPoster.status === 401) {
 		localStorage.removeItem("token");
@@ -109,6 +111,11 @@ const addMovie = async () => {
 		errorMessage.value = "Error while creating movie: unable to upload poster";
 		const errorData = await responseUploadPoster.json();
 		throw errorData.detail;
+	}
+
+	if (!posterData.value.contentUrl) {
+		errorMessage.value = "Error while creating movie: unable to get poster url";
+		throw "Error while creating movie: unable to get poster url";
 	}
 
 	const responseCreateMovie = await fetch("http://127.0.0.1:8000/api/movies", {
@@ -130,6 +137,7 @@ const addMovie = async () => {
 			budget: budget.value,
 			director: director.value,
 			website: website.value,
+			posterUrl: posterData.value.contentUrl,
 		}),
 	});
 
