@@ -2,6 +2,12 @@
 import { ref, onMounted, computed } from "vue";
 import Card from "../components/Card.vue";
 import Searchbar from "../components/Searchbar.vue";
+import { useRoute } from "vue-router";
+
+const route = useRoute();
+const page = ref(route.query.page || 1);
+
+const isNextPageDisabled = ref(true);
 
 const movies = ref([]);
 onMounted(async () => {
@@ -11,7 +17,7 @@ onMounted(async () => {
 		return (window.location.href = "/login");
 	}
 
-	const responseMovies = await fetch("http://127.0.0.1:8000/api/movies?page=1", {
+	const responseMovies = await fetch(`http://127.0.0.1:8000/api/movies?page=${page.value}`, {
 		headers: {
 			"Content-Type": "application/json",
 			Accept: "application/json",
@@ -21,6 +27,11 @@ onMounted(async () => {
 
 	if (responseMovies.ok) {
 		const moviesData = await responseMovies.json();
+
+		if (moviesData.length <= 0) {
+			return (window.location.href = "/movies?page=1");
+		}
+
 		movies.value = moviesData;
 		console.log("Movies:", moviesData);
 	} else if (responseMovies.status === 401) {
@@ -29,7 +40,42 @@ onMounted(async () => {
 	} else {
 		throw "Error while fetching movies";
 	}
+
+	const tempPage = page.value + 1;
+	const responseNextMovies = await fetch(`http://127.0.0.1:8000/api/movies?page=${tempPage}`, {
+		headers: {
+			"Content-Type": "application/json",
+			Accept: "application/json",
+			Authorization: "Bearer " + usertoken,
+		},
+	});
+
+	if (responseNextMovies.status === 401) {
+		localStorage.removeItem("token");
+		window.location.href = "/login";
+	}
+
+	if (responseNextMovies.ok) {
+		const nextMovies = await responseNextMovies.json();
+		if (nextMovies.length > 0) {
+			isNextPageDisabled.value = false;
+		}
+	}
 });
+
+const previousPage = () => {
+	page.value--;
+	window.location.href = `/movies?page=${page.value}`;
+};
+
+const nextPage = async () => {
+	if (isNextPageDisabled.value) {
+		return;
+	}
+
+	page.value++;
+	window.location.href = `/movies?page=${page.value}`;
+};
 </script>
 
 <template>
@@ -46,6 +92,11 @@ onMounted(async () => {
 			<div class="column" v-for="movie in movies">
 				<Card :show-actions="true" :id="movie.id" :data="movie" :title="movie.title" type="movies" image="https://source.unsplash.com/random/150x200/?movie" />
 			</div>
+		</div>
+
+		<div class="row" id="pagination">
+			<button class="btn btn-primary" @click="previousPage" :disabled="page <= 1">Previous</button>
+			<button class="btn btn-primary" @click="nextPage" :disabled="isNextPageDisabled">Next</button>
 		</div>
 	</main>
 	<main v-else>
@@ -86,5 +137,27 @@ onMounted(async () => {
 	gap: 5px;
 	align-items: center;
 	margin: 20px;
+}
+
+.row#pagination {
+	justify-content: center;
+	gap: 10px;
+}
+
+button {
+	height: 30px;
+	width: auto;
+	background-color: hsla(160, 100%, 37%, 1);
+	border: none;
+	border-radius: 5px;
+	transition: all 0.3s;
+	cursor: pointer;
+	color: white;
+	padding: 0 20px;
+}
+
+button:disabled {
+	background-color: hsla(160, 100%, 37%, 0.5);
+	cursor: not-allowed;
 }
 </style>
