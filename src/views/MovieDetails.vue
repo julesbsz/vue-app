@@ -77,7 +77,7 @@ onMounted(async () => {
 			</div>
 		</div>
 
-		<router-link to="/">Back</router-link>
+		<router-link to="/movies">Back</router-link>
 	</main>
 	<main v-else>
 		<h2>Loading...</h2>
