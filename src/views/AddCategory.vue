@@ -1,14 +1,9 @@
 <script setup>
 import { ref, onMounted } from "vue";
-import moment from "moment";
 
-const firstname = ref("Demon");
-const lastname = ref("Salvadore");
-const dob = ref("1997-03-06");
-const nationality = ref("French");
-const created_at = ref(moment().toISOString());
+const name = ref("Anime");
 
-const requiredFields = [firstname, lastname, dob, nationality, created_at];
+const requiredFields = [name];
 
 const successMessage = ref("");
 const errorMessage = ref("");
@@ -35,7 +30,7 @@ const addActor = async () => {
 	checkRequiredFields(requiredFields);
 
 	loading.value = true;
-	const response = await fetch("http://127.0.0.1:8000/api/actors", {
+	const response = await fetch("http://127.0.0.1:8000/api/categories", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
@@ -43,11 +38,7 @@ const addActor = async () => {
 			Authorization: "Bearer " + usertoken,
 		},
 		body: JSON.stringify({
-			lastname: lastname.value,
-			firstname: firstname.value,
-			dob: dob.value,
-			nationality: nationality.value,
-			createdAt: created_at.value,
+			name: name.value,
 		}),
 	});
 
@@ -57,10 +48,10 @@ const addActor = async () => {
 	}
 
 	if (response.ok) {
-		successMessage.value = "Actor created successfully";
+		successMessage.value = `Category ${name.value} created successfully`;
 	} else {
 		const errorData = await response.json();
-		errorMessage.value = "Error while creating actor: " + errorData.detail;
+		errorMessage.value = "Error while creating category: " + errorData.detail;
 	}
 
 	loading.value = false;
@@ -78,31 +69,16 @@ const checkRequiredFields = (fields) => {
 
 <template>
 	<main>
-		<h2>Create a new actor</h2>
+		<h2>Create a new category</h2>
 
 		<form action="">
 			<div class="column">
-				<label for="firstname">First Name</label>
-				<input type="text" name="firstname" id="firstname" placeholder="Demon" v-model="firstname" />
-			</div>
-
-			<div class="column">
-				<label for="lastname">Last Name</label>
-				<input type="text" name="lastname" id="lastname" placeholder="Salvadore" v-model="lastname" />
-			</div>
-
-			<div class="column">
-				<label for="dob">Date of Birth</label>
-				<input type="date" name="dob" id="dob" placeholder="Date of Birth" v-model="dob" />
-			</div>
-
-			<div class="column">
-				<label for="nationality">Nationality</label>
-				<input type="text" name="nationality" id="nationality" placeholder="French" v-model="nationality" />
+				<label for="name">Name</label>
+				<input type="text" name="name" id="name" placeholder="Anime" v-model="name" />
 			</div>
 
 			<button @click.prevent="addActor">
-				{{ loading ? "Loading..." : "Create Actor" }}
+				{{ loading ? "Loading..." : "Create Category" }}
 			</button>
 
 			<template v-if="errorMessage">
@@ -144,13 +120,14 @@ input {
 
 button {
 	height: 30px;
-	width: 100px;
+	width: auto;
 	background-color: hsla(160, 100%, 37%, 1);
 	border: none;
 	border-radius: 5px;
 	transition: all 0.3s;
 	cursor: pointer;
 	color: white;
+	padding: 0 20px;
 }
 
 .error {

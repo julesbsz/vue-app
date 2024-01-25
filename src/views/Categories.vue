@@ -38,6 +38,10 @@ onMounted(async () => {
 		<Searchbar type="categories" />
 
 		<div class="row">
+			<router-link to="/categories/add">Add Category</router-link>
+		</div>
+
+		<div class="row">
 			<Card v-for="item in categories" :show-actions="true" :data="item" :id="item.id" :title="item.name" type="categories" image="https://source.unsplash.com/random/150x200/?film" />
 		</div>
 	</main>

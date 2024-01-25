@@ -12,6 +12,7 @@ import Search from "../views/Search.vue";
 import AddMovie from "../views/AddMovie.vue";
 import CategoryDetails from "../views/CategoryDetails.vue";
 import AddActor from "../views/AddActor.vue";
+import AddCategory from "../views/AddCategory.vue";
 
 const router = createRouter({
 	history: createWebHistory(import.meta.env.BASE_URL),
@@ -63,6 +64,10 @@ const router = createRouter({
 		{
 			path: "/actors/add",
 			component: AddActor,
+		},
+		{
+			path: "/categories/add",
+			component: AddCategory,
 		},
 	],
 });
