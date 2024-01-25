@@ -48,7 +48,6 @@ onMounted(async () => {
 		if (response.ok) {
 			const movieData = await response.json();
 			movies.value.push(movieData);
-			console.log("Related Movies:", movieData);
 		} else if (response.status === 401) {
 			localStorage.removeItem("token");
 			window.location.href = "/login";
@@ -94,6 +93,8 @@ main {
 	align-items: center;
 	justify-content: flex-start;
 	gap: 15px;
+	width: 100vw;
+	overflow-x: scroll;
 }
 
 img {

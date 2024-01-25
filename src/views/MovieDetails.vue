@@ -7,6 +7,7 @@ import Card from "../components/Card.vue";
 const router = useRoute();
 const movie = ref(null);
 
+const actors = ref([]);
 onMounted(async () => {
 	const usertoken = localStorage.getItem("token");
 
@@ -24,16 +25,39 @@ onMounted(async () => {
 		},
 	});
 
+	if (response.status === 401) {
+		localStorage.removeItem("token");
+		window.location.href = "/login";
+	}
+
 	if (response.ok) {
 		const movieData = await response.json();
 		movie.value = movieData;
-		console.log("Movie:", movieData);
-	} else if (response.status === 401) {
-		localStorage.removeItem("token");
-		window.location.href = "/login";
 	} else {
 		throw "Error while fetching movies";
 	}
+
+	movie.value.actors.forEach(async (actor) => {
+		const response = await fetch("http://127.0.0.1:8000" + actor, {
+			headers: {
+				"Content-Type": "application/json",
+				Accept: "application/json",
+				Authorization: "Bearer " + usertoken,
+			},
+		});
+
+		if (response.status === 401) {
+			localStorage.removeItem("token");
+			window.location.href = "/login";
+		}
+
+		if (response.ok) {
+			const actorsData = await response.json();
+			actors.value.push(actorsData);
+		} else {
+			throw "Error while fetching actors";
+		}
+	});
 });
 </script>
 
@@ -43,15 +67,15 @@ onMounted(async () => {
 		<h2>{{ movie.title }}</h2>
 		<p>Description: {{ movie.description }}</p>
 		<p>Release Date: {{ moment(movie.releaseDate).format("LLLL") }}</p>
-		<p>Released : {{ moment().diff(moment(movie.releaseDate), "hours") }} hours ago</p>
+		<p>Released : {{ moment().diff(moment(movie.releaseDate), "years") }} years ago</p>
 		<p>Duration: {{ movie.duration }} minutes</p>
 
-		<template v-if="movie.actors">
-			<h3>Actor(s)</h3>
+		<div v-if="movie.actors" id="actors">
+			<h2>Actor(s)</h2>
 			<div class="row">
-				<Card v-for="actor in movie.actors" :title="actor.firstName" image="https://source.unsplash.com/random/300x400/?human" type="actors" :id="actor.id" />
+				<Card v-for="actor in actors" :title="actor.firstname + ' ' + actor.lastname" image="https://source.unsplash.com/random/300x400/?human" type="actors" :id="actor.id" />
 			</div>
-		</template>
+		</div>
 
 		<router-link to="/">Back</router-link>
 	</main>
@@ -80,5 +104,20 @@ h2 {
 
 p {
 	margin-bottom: 10px;
+}
+
+.row {
+	width: 100%;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: flex-start;
+	gap: 15px;
+	width: 100vw;
+	overflow-x: scroll;
+}
+
+#actors {
+	margin: 20px 0;
 }
 </style>
