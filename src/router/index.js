@@ -13,6 +13,7 @@ import AddMovie from "../views/AddMovie.vue";
 import CategoryDetails from "../views/CategoryDetails.vue";
 import AddActor from "../views/AddActor.vue";
 import AddCategory from "../views/AddCategory.vue";
+import Profile from "../views/Profile.vue";
 
 const router = createRouter({
 	history: createWebHistory(import.meta.env.BASE_URL),
@@ -68,6 +69,10 @@ const router = createRouter({
 		{
 			path: "/categories/add",
 			component: AddCategory,
+		},
+		{
+			path: "/profile",
+			component: Profile,
 		},
 	],
 });

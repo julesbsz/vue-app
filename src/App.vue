@@ -17,6 +17,7 @@ onMounted(() => {
 			<router-link to="/categories">Categories</router-link>
 		</div>
 		<div>
+			<router-link to="/profile">Edit profile</router-link>
 			<router-link to="/logout">Logout</router-link>
 		</div>
 	</nav>
