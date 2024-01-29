@@ -59,7 +59,8 @@ onMounted(async () => {
 <template>
 	<main v-if="movies && latestMovie">
 		<header>
-			<span>Released {{ moment(latestMovie.releaseDate).days() }} days ago.</span>
+			<!-- <span>Released {{ moment(latestMovie.releaseDate).days() }} days ago.</span> -->
+			<span>Recommended {{ Math.floor(Math.random() * 9) + 90 }}% for you.</span>
 			<h2>{{ latestMovie.title }}</h2>
 
 			<a :href="'/movies/' + latestMovie.id" class="watch" target="_blank">
@@ -84,8 +85,8 @@ onMounted(async () => {
 			<Card v-for="actor in actors.slice(0, 5)" :id="actor.id" :title="actor.firstname + ' ' + actor.lastname" type="actors" image="https://source.unsplash.com/random/150x200/?human" />
 		</div>
 	</main>
-	<main v-else>
-		<h2>Loading...</h2>
+	<main class="loader-container" v-else>
+		<span class="loader"></span>
 	</main>
 </template>
 
