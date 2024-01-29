@@ -140,7 +140,7 @@ const closeDrawer = () => {
 }
 
 .column:hover {
-	background-color: #ececec;
+	background-color: #111114;
 }
 
 .row {
