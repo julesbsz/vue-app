@@ -44,7 +44,7 @@ const props = defineProps({
 const imageLoaded = ref(false);
 const image = new Image();
 
-if (props.data.posterUrl) {
+if (props.data?.posterUrl) {
 	image.src = "http://127.0.0.1:8000" + props.data.posterUrl;
 	console.log(image.src);
 } else {
