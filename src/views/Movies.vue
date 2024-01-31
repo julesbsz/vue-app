@@ -83,8 +83,6 @@ const nextPage = async () => {
 
 <template>
 	<main v-if="movies">
-		<h2>All Movies</h2>
-
 		<Searchbar type="movies" />
 
 		<div class="row">
