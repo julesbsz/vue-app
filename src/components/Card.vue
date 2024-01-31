@@ -1,5 +1,5 @@
 <script setup>
-import { defineProps, ref, computed } from "vue";
+import { defineProps, ref, computed, onMounted } from "vue";
 import Modal from "../components/Modal.vue";
 import Drawer from "../components/Drawer.vue";
 
@@ -43,7 +43,13 @@ const props = defineProps({
 
 const imageLoaded = ref(false);
 const image = new Image();
-image.src = props.image;
+
+if (props.data.posterUrl) {
+	image.src = "http://127.0.0.1:8000" + props.data.posterUrl;
+	console.log(image.src);
+} else {
+	image.src = props.image;
+}
 
 image.onload = () => {
 	imageLoaded.value = true;
