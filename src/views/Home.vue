@@ -60,7 +60,7 @@ onMounted(async () => {
 	<main v-if="movies && latestMovie">
 		<header>
 			<!-- <span>Released {{ moment(latestMovie.releaseDate).days() }} days ago.</span> -->
-			<span>Recommended {{ Math.floor(Math.random() * 9) + 90 }}% for you.</span>
+			<span>Recommended at {{ Math.floor(Math.random() * 9) + 90 }}% for you.</span>
 			<h2>{{ latestMovie.title }}</h2>
 
 			<a :href="'/movies/' + latestMovie.id" class="watch" target="_blank">
@@ -74,7 +74,7 @@ onMounted(async () => {
 			Trendy Movies
 		</h2>
 		<div class="row">
-			<Card v-for="movie in movies.slice(0, 5)" :id="movie.id" :title="movie.title" type="movies" image="https://source.unsplash.com/random/150x200/?movie" />
+			<Card v-for="movie in movies.slice(0, 5)" :data="movie" :id="movie.id" :title="movie.title" type="movies" image="https://source.unsplash.com/random/300x400/?movie" />
 		</div>
 
 		<h2 id="actors-title">
@@ -82,7 +82,7 @@ onMounted(async () => {
 			Best Actors
 		</h2>
 		<div class="row">
-			<Card v-for="actor in actors.slice(0, 5)" :id="actor.id" :title="actor.firstname + ' ' + actor.lastname" type="actors" image="https://source.unsplash.com/random/150x200/?human" />
+			<Card v-for="actor in actors.slice(0, 5)" :id="actor.id" :title="actor.firstname + ' ' + actor.lastname" type="actors" image="https://source.unsplash.com/random/300x400/?human" />
 		</div>
 	</main>
 	<main class="loader-container" v-else>
@@ -123,6 +123,7 @@ header::after {
 header span {
 	font-size: 18px;
 	color: #ccc;
+	filter: invert(1);
 }
 
 header h2 {
@@ -181,6 +182,8 @@ h2 svg {
 	flex-direction: row;
 	align-items: center;
 	justify-content: space-between;
+	overflow-x: scroll;
+	position: relative;
 }
 
 .column {
