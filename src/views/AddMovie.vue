@@ -71,6 +71,7 @@ onMounted(async () => {
 	}
 });
 
+const posterData = ref(null);
 const addMovie = async () => {
 	errorMessage.value = "";
 
@@ -82,35 +83,48 @@ const addMovie = async () => {
 
 	checkRequiredFields(requiredFields);
 
-	const selectedActors = [];
-	selectedActors.push("http://127.0.0.1:8000/api/actors/" + actors.value);
+	// upload poster
+	if (!poster.value) {
+		errorMessage.value = "Please upload a poster.";
+		throw "Please upload a poster";
+	}
 
-	const selectedCategories = [];
-	selectedCategories.push("http://127.0.0.1:8000/api/categories/" + categories.value);
+	const formData = new FormData();
+	formData.append("file", poster.value);
 
+	console.log("uploading poster...");
 	const responseUploadPoster = await fetch("http://127.0.0.1:8000/api/media_objects", {
 		method: "POST",
 		headers: {
-			"Content-Type": "application/json",
+			// "Content-Type": "multipart/form-data",
 			Accept: "application/json",
 			Authorization: "Bearer " + usertoken,
 		},
-		body: JSON.stringify({
-			file: poster.value,
-		}),
+		body: formData,
 	});
 
-	if (responseUploadPoster.ok) {
-		console.log("Poster uploaded successfully");
-	} else if (responseUploadPoster.status === 401) {
+	if (responseUploadPoster.status === 401) {
 		localStorage.removeItem("token");
 		window.location.href = "/login";
+	}
+
+	if (responseUploadPoster.ok) {
+		posterData.value = await responseUploadPoster.json();
+		console.log("Poster uploaded successfully:", posterData.value.contentUrl);
 	} else {
 		errorMessage.value = "Error while creating movie: unable to upload poster";
 		const errorData = await responseUploadPoster.json();
 		throw errorData.detail;
 	}
 
+	// upload movie
+	const selectedActors = [];
+	selectedActors.push("http://127.0.0.1:8000/api/actors/" + actors.value);
+
+	const selectedCategories = [];
+	selectedCategories.push("http://127.0.0.1:8000/api/categories/" + categories.value);
+
+	console.log("uploading movie...");
 	const responseCreateMovie = await fetch("http://127.0.0.1:8000/api/movies", {
 		method: "POST",
 		headers: {
@@ -130,14 +144,18 @@ const addMovie = async () => {
 			budget: budget.value,
 			director: director.value,
 			website: website.value,
+			posterUrl: posterData.value.contentUrl ? posterData.value.contentUrl : null,
 		}),
 	});
 
-	if (responseCreateMovie.ok) {
-		successMessage.value = "Movie created successfully";
-	} else if (responseCreateMovie.status === 401) {
+	if (responseCreateMovie.status === 401) {
 		localStorage.removeItem("token");
 		window.location.href = "/login";
+	}
+
+	if (responseCreateMovie.ok) {
+		successMessage.value = "Movie created successfully";
+		console.log("Movie created successfully");
 	} else {
 		errorMessage.value = "Error while creating movie";
 		const errorData = await responseCreateMovie.json();
