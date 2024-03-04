@@ -121,7 +121,14 @@ const closeDrawer = () => {
 	<router-link :to="{ path: '/' + type + '/' + id }" v-else>
 		<div class="column">
 			<img :src="image.src" alt="Movie Image" />
-			<p>{{ title }}</p>
+
+			<div class="title-row">
+				<p>{{ title }}</p>
+				<div v-if="props.type === 'movies'">
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="rgba(245,31,82,1)"><path d="M12.0006 15.968L16.2473 18.3451L15.2988 13.5717L18.8719 10.2674L14.039 9.69434L12.0006 5.27502V15.968ZM12.0006 18.26L4.94715 22.2082L6.52248 14.2799L0.587891 8.7918L8.61493 7.84006L12.0006 0.5L15.3862 7.84006L23.4132 8.7918L17.4787 14.2799L19.054 22.2082L12.0006 18.26Z"></path></svg>
+					<span>{{ props.data.note }}</span>
+				</div>
+			</div>
 
 			<div class="row" v-if="props.showActions">
 				<a v-if="props.data" @click.prevent="() => handleEdit(props.id)">Edit</a>
@@ -146,7 +153,7 @@ const closeDrawer = () => {
 }
 
 .column:hover {
-	background-color: #ececec;
+	background-color: #111114;
 }
 
 .row {
@@ -162,13 +169,47 @@ const closeDrawer = () => {
 
 .row img {
 	border-radius: 5px;
-	height: 200px;
-	width: 150px;
+	height: 400px;
+	width: 300px;
 }
 
 .row p {
-	text-align: center;
+	text-align: left;
 	margin-top: 10px;
+	color: white;
+	text-transform: uppercase;
+	font-size: 18px;
+	font-weight: 600;
+	align-self: flex-start;
+}
+
+.title-row {
+	margin-top: 10px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	width: 100%;
+}
+
+.title-row p {
+	margin: 0;
+}
+
+.title-row div {
+	display: flex;
+	align-items: center;
+	gap: 5px;
+}
+
+.title-row div span {
+	color: #ccc;
+	font-size: 18px;
+	font-weight: 600;
+}
+
+.title-row div svg {
+	height: 24px;
+	width: 24px;
 }
 
 .skeleton-card {
@@ -185,14 +226,14 @@ const closeDrawer = () => {
 .skeleton-image {
 	width: 150px;
 	height: 200px;
-	background-color: #ececec;
+	background-color: #111114;
 	border-radius: 5px;
 }
 
 .skeleton-text {
 	width: 100px;
 	height: 20px;
-	background-color: #ececec;
+	background-color: #111114;
 	border-radius: 5px;
 	margin-top: 10px;
 }

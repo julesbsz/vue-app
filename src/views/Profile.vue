@@ -116,8 +116,8 @@ const setModified = () => {
 			{{ loading ? "Saving..." : "Save" }}
 		</button>
 	</main>
-	<main v-else>
-		<h2>Loading...</h2>
+	<main class="loader-container" v-else>
+		<span class="loader"></span>
 	</main>
 </template>
 
@@ -142,7 +142,7 @@ input {
 	border: none;
 	outline: none;
 	border-bottom: 1px #ececec solid;
-	color: black;
+	color: white;
 	font-size: 16px;
 }
 

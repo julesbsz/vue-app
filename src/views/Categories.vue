@@ -99,8 +99,8 @@ const nextPage = async () => {
 			<button class="btn btn-primary" @click="nextPage" :disabled="isNextPageDisabled">Next</button>
 		</div>
 	</main>
-	<main v-else>
-		<h2>Loading...</h2>
+	<main class="loader-container" v-else>
+		<span class="loader"></span>
 	</main>
 </template>
 

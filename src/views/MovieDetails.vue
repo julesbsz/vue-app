@@ -79,8 +79,8 @@ onMounted(async () => {
 
 		<router-link to="/movies">Back</router-link>
 	</main>
-	<main v-else>
-		<h2>Loading...</h2>
+	<main class="loader-container" v-else>
+		<span class="loader"></span>
 	</main>
 </template>
 

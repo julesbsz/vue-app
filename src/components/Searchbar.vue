@@ -33,8 +33,8 @@ onMounted(() => {
 
 <template>
 	<div class="row searchbar">
-		<input type="text" v-model="search" :placeholder="'Search a ' + props.type.slice(0, -1) + ' by name'" />
-		<button @click="handleSearch" @keyup.enter="handleSearch">Search</button>
+		<input id="search" type="search" v-model="search" :placeholder="'Search a ' + props.type.slice(0, -1) + ' by name'" autofocus required />
+		<button @click="handleSearch" @keyup.enter="handleSearch" :disabled="search.length <= 0 || !search">Search</button>
 	</div>
 </template>
 
@@ -50,34 +50,46 @@ onMounted(() => {
 }
 
 .row.searchbar {
-	justify-content: flex-start;
+	justify-content: center;
 	gap: 15px;
 }
 
 .row.row.searchbar input {
+	background-color: #111114;
 	height: 30px;
 	width: 500px;
-	background-color: transparent;
 	border: none;
 	outline: none;
-	border-bottom: 1px #ececec solid;
-	color: black;
 	font-size: 16px;
+	padding: 20px;
+	border: none;
+	border-radius: 5px;
+	color: white;
 }
 
 .row.row.searchbar button {
-	height: 30px;
-	width: 75px;
-	background-color: hsla(160, 100%, 37%, 1);
+	height: 38px;
+	width: 100px;
+	background-color: var(--color-main);
 	border: none;
 	border-radius: 5px;
 	transition: all 0.3s;
 	cursor: pointer;
 	color: white;
+	font-weight: 600;
 }
 
 .row.row.searchbar button:hover {
-	background-color: hsla(160, 100%, 37%, 0.5);
+	filter: brightness(0.8);
+}
+
+.row.row.searchbar button:disabled {
+	background-color: #333333;
+	cursor: not-allowed;
+}
+
+.row.row.searchbar button:disabled:hover {
+	filter: brightness(1);
 }
 
 .row img {

@@ -18,7 +18,7 @@ onMounted(async () => {
 		return (window.location.href = "/login");
 	}
 
-	const responseMovies = await fetch(`http://127.0.0.1:8000/api/movies?page=${page.value}${filter.value ? "&title=" + filter.value : ""}`, {
+	const responseMovies = await fetch(`http://127.0.0.1:8000/api/movies?page=${page.value}${filter.value ? "&title=" + filter.value : ""}&nbItems=9`, {
 		headers: {
 			"Content-Type": "application/json",
 			Accept: "application/json",
@@ -83,18 +83,14 @@ const nextPage = async () => {
 
 <template>
 	<main v-if="movies">
-		<h2>All Movies</h2>
-
 		<Searchbar type="movies" />
 
 		<div class="row">
-			<router-link to="/movies/add">Add movie</router-link>
+			<router-link class="add-movie" to="/movies/add">Create a movie</router-link>
 		</div>
 
 		<div class="row">
-			<div class="column" v-for="movie in movies">
-				<Card :show-actions="true" :id="movie.id" :data="movie" :title="movie.title" type="movies" image="https://source.unsplash.com/random/150x200/?movie" />
-			</div>
+			<Card v-for="movie in movies" :show-actions="true" :id="movie.id" :data="movie" :title="movie.title" type="movies" image="https://source.unsplash.com/random/150x200/?movie" />
 		</div>
 
 		<div class="row" id="pagination">
@@ -102,12 +98,29 @@ const nextPage = async () => {
 			<button class="btn btn-primary" @click="nextPage" :disabled="isNextPageDisabled">Next</button>
 		</div>
 	</main>
-	<main v-else>
-		<h2>Loading...</h2>
+	<main class="loader-container" v-else>
+		<span class="loader"></span>
 	</main>
 </template>
 
 <style scoped>
+.add-movie {
+	background-color: var(--color-main);
+	border: none;
+	border-radius: 5px;
+	transition: all 0.3s;
+	cursor: pointer;
+	color: white;
+	font-weight: 600;
+	padding: 8px 20px;
+	margin: 0 auto;
+	margin-top: 30px;
+}
+
+.add-movie:hover {
+	filter: brightness(0.8);
+}
+
 #actors-title {
 	margin-top: 50px;
 }
@@ -118,28 +131,10 @@ const nextPage = async () => {
 	display: flex;
 	flex-direction: row;
 	align-items: center;
-	justify-content: space-between;
+	justify-content: center;
 	flex-wrap: wrap;
-}
-
-.row img {
-	border-radius: 5px;
-	height: 200px;
-	width: 150px;
-}
-
-.row p {
-	text-align: center;
-	margin-top: 10px;
-}
-
-.column {
-	width: 150px;
-	display: flex;
-	flex-direction: column;
-	gap: 5px;
-	align-items: center;
-	margin: 20px;
+	gap: 40px;
+	margin-top: 50px;
 }
 
 .row#pagination {
@@ -148,19 +143,26 @@ const nextPage = async () => {
 }
 
 button {
-	height: 30px;
-	width: auto;
-	background-color: hsla(160, 100%, 37%, 1);
+	background-color: var(--color-main);
 	border: none;
 	border-radius: 5px;
 	transition: all 0.3s;
 	cursor: pointer;
 	color: white;
-	padding: 0 20px;
+	font-weight: 600;
+	padding: 10px 20px;
+}
+
+button:hover {
+	filter: brightness(0.8);
 }
 
 button:disabled {
-	background-color: hsla(160, 100%, 37%, 0.5);
+	background-color: #333333;
 	cursor: not-allowed;
+}
+
+button:disabled:hover {
+	filter: brightness(1);
 }
 </style>
