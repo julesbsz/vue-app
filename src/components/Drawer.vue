@@ -204,7 +204,7 @@ const handleSave = async () => {
 	right: -500px;
 	width: 400px;
 	height: 100vh;
-	background-color: #f5f5f5;
+	background-color: #0f0f12;
 	transition: all 0.3s;
 	box-shadow: -5px 0px 30px rgba(0, 0, 0, 0.1);
 	z-index: 100;

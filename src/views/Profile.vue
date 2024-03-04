@@ -142,7 +142,7 @@ input {
 	border: none;
 	outline: none;
 	border-bottom: 1px #ececec solid;
-	color: black;
+	color: white;
 	font-size: 16px;
 }
 
